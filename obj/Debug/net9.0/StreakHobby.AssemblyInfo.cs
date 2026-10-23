@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StreakHobby")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+71fa1b82fb01026aea47bcaab4b7ba35ff0d464a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a3d080177c76523d0f4d4f266b26bfca1619e716")]
 [assembly: System.Reflection.AssemblyProductAttribute("StreakHobby")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StreakHobby")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
