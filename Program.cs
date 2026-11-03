@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
@@ -20,7 +21,6 @@ app.MapGet("/test", () => new
 // הרשמת משתמש חדש
 app.MapPost("/register", async (RegisterRequest request, AppDbContext db) =>
 {
-    // בדיקה ששם המשתמש והסיסמה אינם ריקים
     if (string.IsNullOrWhiteSpace(request.Username) ||
         string.IsNullOrWhiteSpace(request.Password))
     {
@@ -30,10 +30,8 @@ app.MapPost("/register", async (RegisterRequest request, AppDbContext db) =>
         });
     }
 
-    // הסרת רווחים מיותרים בתחילת שם המשתמש ובסופו
     string username = request.Username.Trim();
 
-    // בדיקה אם שם המשתמש כבר קיים במסד הנתונים
     bool userExists = await db.Users
         .AnyAsync(user => user.Username == username);
 
@@ -45,26 +43,24 @@ app.MapPost("/register", async (RegisterRequest request, AppDbContext db) =>
         });
     }
 
-    // יצירת משתמש חדש
     User newUser = new User();
 
     newUser.Username = username;
     newUser.Email = "";
 
-    // הצפנת הסיסמה לפני שמירתה במסד הנתונים
-    PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
+    // הצפנת הסיסמה
+    PasswordHasher<User> passwordHasher =
+        new PasswordHasher<User>();
 
     newUser.PasswordHash = passwordHasher.HashPassword(
         newUser,
         request.Password
     );
 
-    // הוספת המשתמש למסד הנתונים ושמירת השינויים
     db.Users.Add(newUser);
 
     await db.SaveChangesAsync();
 
-    // החזרת תשובה שההרשמה הצליחה
     return Results.Ok(new
     {
         message = "Registration successful!",
@@ -72,10 +68,68 @@ app.MapPost("/register", async (RegisterRequest request, AppDbContext db) =>
     });
 });
 
+// התחברות של משתמש קיים
+app.MapPost("/login", async (LoginRequest request, AppDbContext db) =>
+{
+    // בדיקה שהמשתמש והסיסמה הוזנו
+    if (string.IsNullOrWhiteSpace(request.Username) ||
+        string.IsNullOrWhiteSpace(request.Password))
+    {
+        return Results.BadRequest(new
+        {
+            message = "Username and password are required."
+        });
+    }
+
+    string username = request.Username.Trim();
+
+    // חיפוש המשתמש במסד הנתונים
+    User? user = await db.Users
+        .FirstOrDefaultAsync(user => user.Username == username);
+
+    // אם המשתמש לא קיים
+    if (user == null)
+    {
+        return Results.Unauthorized();
+    }
+
+    // בדיקת הסיסמה מול הסיסמה המוצפנת במסד הנתונים
+    PasswordHasher<User> passwordHasher =
+        new PasswordHasher<User>();
+
+    PasswordVerificationResult result =
+        passwordHasher.VerifyHashedPassword(
+            user,
+            user.PasswordHash,
+            request.Password
+        );
+
+    // אם הסיסמה שגויה
+    if (result == PasswordVerificationResult.Failed)
+    {
+        return Results.Unauthorized();
+    }
+
+    // ההתחברות הצליחה
+    return Results.Ok(new
+    {
+        message = "Login successful!",
+        success = true,
+        username = user.Username
+    });
+});
+
 app.Run();
 
 // מבנה הנתונים שמתקבלים בבקשת הרשמה
 public class RegisterRequest
+{
+    public string Username { get; set; } = "";
+    public string Password { get; set; } = "";
+}
+
+// מבנה הנתונים שמתקבלים בבקשת התחברות
+public class LoginRequest
 {
     public string Username { get; set; } = "";
     public string Password { get; set; } = "";
