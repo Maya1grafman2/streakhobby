@@ -1,12 +1,1 @@
-{
-  "Version": 1,
-  "Hash": "rl+uNumiWmk/S+TUVB27w1DmgUx82Q3eADwRdv64s0g=",
-  "Source": "StreakHobby",
-  "BasePath": "_content/StreakHobby",
-  "Mode": "Default",
-  "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
-}
+{"Version":1,"Hash":"Uc5giEBLt0/L+vzJZbTnMPZ6zLzZfWc6dmkdi7KFOQ4=","Source":"StreakHobby","BasePath":"/","Mode":"Root","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[],"Assets":[],"Endpoints":[]}
